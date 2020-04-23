@@ -23,32 +23,15 @@ nodejs --version
 # install pm2
 sudo npm install pm2 -g
 
-#Reverse proxy
-sudo unlink /etc/nginx/sites-enabled/default
+# link node config files
+sudo systemctl start nginx
+sudo rm /etc/nginx/sites-available/default
+sudo cp /home/ubuntu/environment/nginx.default /etc/nginx/sites-available/default
+sudo systemctl reload-or-restart nginx
+sleep 10
+sudo systemctl reload-or-restart nginx
 
-cd etc/nginx/sites-available/
-sudo touch reverse-proxy.conf
-
-reverse-proxy.conf << EOF
-server {
-        listen 80;
-        listen [::]:80;
-
-        access_log /var/log/nginx/reverse-access.log;
-        error_log /var/log/nginx/reverse-error.log;
-
-        location / {
-                    proxy_pass http://192.168.10.100:3000;
-  }
-}
-EOF
-
-sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
-sudo service nginx configtest
-sudo service nginx restart
-
+# start the app
 cd /home/ubuntu/app
-sudo npm install express
-sudo npm install mongoose
-sudo npm install ejs
-nodejs app.js
+npm install
+npm start
