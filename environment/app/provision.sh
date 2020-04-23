@@ -26,12 +26,18 @@ sudo npm install pm2 -g
 # link node config files
 sudo systemctl start nginx
 sudo rm /etc/nginx/sites-available/default
-sudo cp /home/ubuntu/environment/nginx.default /etc/nginx/sites-available/default
+#sudo rm /etc/nginx/sites-enabled/reverse-proxy.conf
+sudo ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled/reverse-proxy.conf
+
 sudo systemctl reload-or-restart nginx
 sleep 10
 sudo systemctl reload-or-restart nginx
 
 # start the app
-cd /home/ubuntu/app
+cd /home/vagrant/app
 npm install
+
+# fill the DB
+node seeds/seed.js
+
 npm start
